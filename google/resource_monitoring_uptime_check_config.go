@@ -111,6 +111,10 @@ func resourceMonitoringUptimeCheckConfig() *schema.Resource {
 							Type:     schema.TypeBool,
 							Optional: true,
 						},
+						"validate_ssl": {
+							Type:     schema.TypeBool,
+							Optional: true,
+						},
 					},
 				},
 				ConflictsWith: []string{"tcp_check"},
@@ -605,6 +609,8 @@ func flattenMonitoringUptimeCheckConfigHttpCheck(v interface{}, d *schema.Resour
 		flattenMonitoringUptimeCheckConfigHttpCheckPath(original["path"], d)
 	transformed["use_ssl"] =
 		flattenMonitoringUptimeCheckConfigHttpCheckUseSsl(original["useSsl"], d)
+	transformed["validate_ssl"] =
+		flattenMonitoringUptimeCheckConfigHttpCheckUseSsl(original["validateSsl"], d)
 	transformed["mask_headers"] =
 		flattenMonitoringUptimeCheckConfigHttpCheckMaskHeaders(original["maskHeaders"], d)
 	return []interface{}{transformed}
@@ -812,6 +818,13 @@ func expandMonitoringUptimeCheckConfigHttpCheck(v interface{}, d TerraformResour
 		return nil, err
 	} else if val := reflect.ValueOf(transformedUseSsl); val.IsValid() && !isEmptyValue(val) {
 		transformed["useSsl"] = transformedUseSsl
+	}
+
+	transformedValidateSsl, err := expandMonitoringUptimeCheckConfigHttpCheckUseSsl(original["validate_ssl"], d, config)
+	if err != nil {
+		return nil, err
+	} else if val := reflect.ValueOf(transformedValidateSsl); val.IsValid() && !isEmptyValue(val) {
+		transformed["validateSsl"] = transformedValidateSsl
 	}
 
 	transformedMaskHeaders, err := expandMonitoringUptimeCheckConfigHttpCheckMaskHeaders(original["mask_headers"], d, config)
